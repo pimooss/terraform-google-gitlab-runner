@@ -22,6 +22,18 @@ variable "gcp_zone" {
   type        = string
   description = "The GCP zone to deploy the runner into."
 }
+variable "gcp_network" {
+  type        = string
+  description = "Network."
+}
+variable "gcp_subnetwork" {
+  type        = string
+  description = "Sub Network."
+}
+variable "gcp_network_tags" {
+  type        = string
+  description = "Comma seperated string with network tags. e.g allow-ssh"
+}
 variable "gitlab_url" {
   type        = string
   description = "The URL of the GitLab server hosting the projects to be built."

@@ -68,11 +68,9 @@ resource "google_compute_instance" "ci_runner" {
   }
 
   network_interface {
-    network = "default"
-
-    access_config {
-      // Ephemeral IP
-    }
+    network            = var.gcp_network
+    subnetwork         = var.gcp_subnetwork
+    subnetwork_project = var.gcp_project
   }
 
   metadata_startup_script = <<SCRIPT
@@ -91,6 +89,10 @@ docker-machine create --driver google \
     --google-project ${var.gcp_project} \
     --google-machine-type f1-micro \
     --google-zone ${var.gcp_zone} \
+    --google-network ${var.gcp_network} \
+    --google-subnetwork ${var.gcp_subnetwork} \
+    --google-use-internal-ip-only \
+    --google-tags ${var.gcp_network_tags} \
     --google-service-account ${google_service_account.ci_worker.email} \
     --google-scopes https://www.googleapis.com/auth/cloud-platform \
     test-docker-machine
@@ -111,6 +113,10 @@ sudo gitlab-runner register -n \
     --machine-machine-driver google \
     --machine-machine-name "gitlab-ci-worker-%s" \
     --machine-machine-options "google-project=${var.gcp_project}" \
+    --machine-machine-options "google-network=${var.gcp_network}" \
+    --machine-machine-options "google-subnetwork=${var.gcp_subnetwork}" \
+    --machine-machine-options "google-use-internal-ip-only" \
+    --machine-machine-options "google-tags=${var.gcp_network_tags}" \
     --machine-machine-options "google-machine-type=${var.ci_worker_instance_type}" \
     --machine-machine-options "google-zone=${var.gcp_zone}" \
     --machine-machine-options "google-service-account=${google_service_account.ci_worker.email}" \
